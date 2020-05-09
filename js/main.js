@@ -45,7 +45,7 @@
         for(let i=0;i<ul.childElementCount;i++){
             score[i]=[];
             for(let j=0;j<ul.childElementCount;j++)
-                if(i==j){
+                if(ul.childElementCount%2===0 && i==j){
                     score[i][j]=1;
                 }else{
                     score[i][j]=0;
@@ -61,8 +61,9 @@
     });
 
     next.addEventListener('click',()=>{
-        if(score.every(value=>value>0)){
+        if(score.every(value=>value.every(value_=>value_>0))){
             alert('ゲーム終了');
+            location.reload();
             return;
         }
 
@@ -78,10 +79,18 @@
 
         var members_=shuffle([...members]);
 
-        for(let i=0;i<members_.length/2+1;i+=2){
-            score[members.indexOf(members_[i])][members.indexOf(members_[i+1])]=1;
-            score[members.indexOf(members_[i+1])][members.indexOf(members_[i])]=1;
-            console.log(members.indexOf(members_[i]));
+        for(let i=0;i<members_.length;i++){
+            if(i%2===0){
+                if(i<members_.length-1){
+                    // console.log(i);
+                    score[members.indexOf(members_[i])][members.indexOf(members_[i+1])]=1;
+                    score[members.indexOf(members_[i+1])][members.indexOf(members_[i])]=1;
+                }
+                else{
+                    // console.log('OK');
+                    score[members.indexOf(members_[i])][members.indexOf(members_[i])]=1;
+                }
+            }
         }
         
         console.log(members_);
@@ -90,9 +99,8 @@
             const li=document.createElement('li');
             li.textContent=`${members_[i]} - ${members_[i+1]}`;
             game.appendChild(li);
-            
-        
         }
+        
         if(members_.length%2===1){
             const li=document.createElement('li');
             li.textContent=`不戦勝　${members_[members_.length-1]}`;
@@ -109,8 +117,15 @@
             }
     
             e=0;
-            for(let i=0;i<arr.length/2+1;i+=2){
-                e+=score[members.indexOf(arr[i])][members.indexOf(arr[i+1])];
+            for(let i=0;i<arr.length;i++){
+                if(i%2===0){
+                    if(i<arr.length-1){
+                        e+=score[members.indexOf(arr[i])][members.indexOf(arr[i+1])];
+                    }
+                    else{
+                        e+=score[members.indexOf(arr[i])][members.indexOf(arr[i])];
+                    }
+                }
             }
 
         }while(e>0);
